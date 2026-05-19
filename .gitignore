@@ -3,6 +3,8 @@ node_modules/
 
 # environment files
 .env
+.next
+
 
 # build folders
 dist/
