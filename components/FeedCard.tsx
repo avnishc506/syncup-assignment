@@ -5,26 +5,22 @@ interface Feed {
   created_at: string;
 }
 
-interface Props {
-  feed: Feed;
-}
-
-export default function FeedCard({
-  feed,
-}: Props) {
+export default function FeedCard({ feed }: { feed: Feed }) {
   return (
-    <div className="border p-4 rounded mb-4">
-      <h2 className="text-xl font-bold">
-        {feed.title}
-      </h2>
+    <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-100 hover:shadow-xl transition">
+      <div className="flex justify-between items-start">
+        <h2 className="text-xl font-bold text-gray-800">
+          {feed.title}
+        </h2>
 
-      <p>{feed.description}</p>
+        <span className="text-xs text-gray-400">
+          {new Date(feed.created_at).toLocaleString()}
+        </span>
+      </div>
 
-      <small>
-        {new Date(
-          feed.created_at
-        ).toLocaleString()}
-      </small>
+      <p className="text-gray-600 mt-3 leading-relaxed">
+        {feed.description}
+      </p>
     </div>
   );
 }

@@ -12,14 +12,11 @@ interface Feed {
   created_at: string;
 }
 
-const socket = io(
-  process.env.NEXT_PUBLIC_SOCKET_URL!,
-  {
-    transports: ["websocket"],
-    reconnection: true,
-    reconnectionAttempts: 5,
-  }
-);
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
+  transports: ["websocket"],
+  reconnection: true,
+  reconnectionAttempts: 5,
+});
 
 export default function HomePage() {
   const [feeds, setFeeds] = useState<Feed[]>([]);
@@ -33,7 +30,7 @@ export default function HomePage() {
       );
 
       setFeeds(response.data.data);
-    } catch (error) {
+    } catch (err) {
       setError("Failed to fetch feeds");
     } finally {
       setLoading(false);
@@ -54,19 +51,60 @@ export default function HomePage() {
     };
   }, []);
 
-  if (loading) return <h1>Loading...</h1>;
-
-  if (error) return <h1>{error}</h1>;
-
   return (
-    <div className="p-5">
-      <h1 className="text-3xl font-bold mb-5">
-        Realtime Feed
-      </h1>
+    <main className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-black text-white py-6 shadow-md">
+        <div className="max-w-4xl mx-auto px-4">
+          <h1 className="text-4xl font-bold">
+            Realtime Feed
+          </h1>
 
-      {feeds.map((feed) => (
-        <FeedCard key={feed.id} feed={feed} />
-      ))}
-    </div>
+          <p className="text-gray-300 mt-2">
+            Live updates powered by Socket.IO
+          </p>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-xl">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && feeds.length === 0 && (
+          <div className="bg-white rounded-2xl p-10 text-center shadow">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              No feeds available
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              New realtime feeds will appear here.
+            </p>
+          </div>
+        )}
+
+        <div className="grid gap-5">
+          {feeds.map((feed) => (
+            <div
+              key={feed.id}
+              className="transition-transform duration-300 hover:scale-[1.01]"
+            >
+              <FeedCard feed={feed} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
   );
 }
+
+
